@@ -8,9 +8,9 @@ resource "argocd_application" "postgres_cluster" {
     project = "default"
 
     source {
-      repo_url        = "git@github.com:fabriziowho/project.git"
+      repo_url        = "git@github.com:fabriziowho/full-stack-webapi-k8s.git"
       target_revision = "main"
-      path            = "k8s-app/postgres-cluster"
+      path            = "k8s-app/helm/postgres-cluster"
 
       helm {
         value_files = ["values.yaml"]

@@ -1,0 +1,36 @@
+# # templates/postgresql-cluster.yaml
+
+# apiVersion: postgres-operator.crunchydata.com/v1beta1
+# kind: PostgresCluster
+# metadata:
+#   name: {{ .Values.postgresqlClusterName }}
+# spec:
+#   instances:
+#     - name: {{ .Values.instanceName }}
+#       replicas: {{ .Values.instanceReplicas }}
+#       dataVolumeClaimSpec:
+#         accessModes:
+#           - ReadWriteOnce
+#         resources:
+#           requests:
+#             storage: {{ .Values.persistentVolumeSize }}
+#       resources:
+#         limits:
+#           memory: {{ .Values.instanceMemory }}
+#           cpu: {{ .Values.instanceCPU }}
+#       # volume:
+#       #   size: {{ .Values.instanceSize }}
+#       #   storageClassName: {{ .Values.instanceStorageClassName }}
+#       # env:
+#       #   - name: POSTGRES_USER
+#       #     value: {{ .Values.postgresqlUser }}
+#       #   - name: POSTGRES_PASSWORD
+#       #     value: {{ .Values.postgresqlPassword }}
+#   # persistentVolume:
+#   #   size: {{ .Values.persistentVolumeSize }}
+#   postgresVersion: {{ .Values.postgresVersion }}
+#   service:
+#     type: {{ .Values.service.type }}
+#     # port: {{ .Values.service.port }}
+#   configMaps:
+#     - name: {{ .Values.configmap }}

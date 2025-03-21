@@ -1,0 +1,32 @@
+# values.yaml
+
+postgresVersion: 17
+
+# Database credentials
+# postgresqlUser: "user"
+# postgresqlPassword: "password"
+
+# PostgreSQL Cluster name
+postgresqlClusterName: "postgres-cluster"
+
+# Number of replicas for the PostgreSQL cluster
+replicas: 1
+
+# Persistent volume size for PostgreSQL
+persistentVolumeSize: 5Gi
+
+service:
+  type: ClusterIP
+
+instanceName: instance1
+instanceSize: 1Gi
+instanceStorageClassName: "hostpath"
+instanceMemory: 2Gi
+instanceCPU: 1000m
+instanceReplicas: 1
+
+patroni:
+  dynamicConfiguration:
+    postgresql:
+      pg_hba:
+        - "hostnossl all all all md5"

@@ -1,0 +1,24 @@
+frontend:
+  image:
+    repository: my-frontend-repo
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 80
+
+backend:
+  image:
+    repository: my-backend-repo
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 5000
+
+postgresql:
+  image:
+    repository: postgres
+    tag: "13"
+  password: mysecretpassword
+  database: mydb
+  service:
+    port: 5432

@@ -17,6 +17,8 @@ The main implementation steps are as follows:
   - Backend API 🛠️
   - Frontend application 🎨
 3. **Deploy Helm Chart Components** 📦
+  - Adjust Environment Variables 🔧
+  - Deploy Helm Chart App via Argo CD 🐙
 
 This case study demonstrates the following core concepts:
 
@@ -49,7 +51,7 @@ Below is the architecture along with the components used:
 
 The first step is to deploy all the components required for the webapp.
 
-## a. Deploy CrunchyData Postgres Operator 🐘
+## Deploy CrunchyData Postgres Operator 🐘
 
 The **CrunchyData Postgres Operator** is deployed to handle PostgreSQL instances and provides built-in backup and replication services.
 
@@ -67,7 +69,7 @@ resource "helm_release" "crunchy_operator" {
 
 ---
 
-## b. Deploy Argo CD via Helm 🚀
+## Deploy Argo CD via Helm 🚀
 
 1. Create the Argo CD namespace in your Kubernetes cluster:
 
@@ -75,20 +77,20 @@ resource "helm_release" "crunchy_operator" {
 kubectl create namespace argocd
 ```
 
-1. Deploy Argo CD via Helm into the newly created namespace:
+2. Deploy Argo CD via Helm into the newly created namespace:
 
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm /
 helm install argocd argo/argo-cd -n argocd
 ```
 
-1. Open the Argo CD UI and configure the repository for fetching the configuration:
+3. Open the Argo CD UI and configure the repository for fetching the configuration:
 
 ![image.png](readme-contents/image.png)
 
 ---
 
-## c. Deploy PostgreSQL Cluster via Argo CD 🐙
+## Deploy PostgreSQL Cluster via Argo CD 🐙
 
 The **CrunchyData Postgres Operator** provides Custom Resource Definitions (CRDs), such as `PGCluster`, for deploying PostgreSQL clusters. This step deploys the PostgreSQL cluster via Argo CD and Terraform using the Helm provider.
 
@@ -138,7 +140,7 @@ resource "argocd_application" "postgres_cluster" {
 
 ---
 
-## d. Configure PostgreSQL Cluster ⚙️
+## Configure PostgreSQL Cluster ⚙️
 
 Example PostgreSQL configuration script:
 
@@ -172,7 +174,7 @@ INSERT INTO users (name, email) VALUES ('Jane Smith', 'jane@example.com');
 
 # 2. Deploying the Web API 🌐
 
-## a. Backend API 🛠️
+## Backend API 🛠️
 
 The backend API manages database queries through a Node.js-based API. It uses Swagger for API testing.
 
@@ -182,7 +184,7 @@ To test locally, you'll need to port-forward the PostgreSQL service to allow com
 
 ![image.png](readme-contents/image%202.png)
 
-## b. Frontend 🎨
+## Frontend 🎨
 
 The frontend is built with React and communicates with the backend API via the `/users` endpoint to fetch user data.
 
@@ -196,7 +198,7 @@ An **NGINX** ingress controller is used to manage routing within the Kubernetes 
 
 # 3. Deploying Helm Chart Components 📦
 
-## a. Adjust Environment Variables
+## Adjust Environment Variables
 
 To deploy the app in Kubernetes, the application is converted into a Helm chart. Database parameters are passed through Helm values files, ensuring sensitive data is not hardcoded.
 
@@ -234,7 +236,7 @@ const pool = new Pool({
 
 ---
 
-## b. Deploy Helm Chart App via Argo CD 🐙
+## Deploy Helm Chart App via Argo CD 🐙
 
 Argo CD will manage the deployment of the Helm chart, ensuring a smooth CI/CD pipeline.
 

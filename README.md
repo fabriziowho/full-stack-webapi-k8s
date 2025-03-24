@@ -41,6 +41,8 @@ This case study demonstrates the following core concepts:
 
 Below is the architecture along with the components used:
 
+![image.png](readme-contents/schema.png)
+
 ---
 
 # 1. Preparing the Architecture Components

@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fe-api-webapp
+  namespace: argocd
+spec:
+  project: default
+  source:
+    path: k8s-app/helm/webapp
+    repoURL: git@github.com:fabriziowho/full-stack-webapi-k8s.git
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

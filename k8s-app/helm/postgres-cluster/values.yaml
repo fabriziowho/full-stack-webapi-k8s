@@ -2,10 +2,6 @@
 
 postgresVersion: 17
 
-# Database credentials
-# postgresqlUser: "user"
-# postgresqlPassword: "password"
-
 # PostgreSQL Cluster name
 postgresqlClusterName: "postgres-cluster"
 

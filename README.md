@@ -11,7 +11,7 @@ The main implementation steps are as follows:
 1. **Prepare the Kubernetes Architecture** 🏗️
   - Deploy CrunchyData Postgres Operator 🐘
   - Deploy Argo CD via Helm and configure it 🚀
-  - Deploy the PostgreSQL cluster using Argo CD 🗄️
+  - Deploy the PostgreSQL cluster using Argo CD 🐙
   - Configure PostgreSQL cluster ⚙️
 2. **Deploy the Web API** 🌐
   - Backend API 🛠️
@@ -86,7 +86,7 @@ helm install argocd argo/argo-cd -n argocd
 
 ---
 
-## c. Deploy PostgreSQL Cluster via Argo CD 🗄️
+## c. Deploy PostgreSQL Cluster via Argo CD 🐙
 
 The **CrunchyData Postgres Operator** provides Custom Resource Definitions (CRDs), such as `PGCluster`, for deploying PostgreSQL clusters. This step deploys the PostgreSQL cluster via Argo CD and Terraform using the Helm provider.
 
@@ -232,7 +232,7 @@ const pool = new Pool({
 
 ---
 
-## b. Deploy Helm Chart App via Argo CD 🚀
+## b. Deploy Helm Chart App via Argo CD 🐙
 
 Argo CD will manage the deployment of the Helm chart, ensuring a smooth CI/CD pipeline.
 

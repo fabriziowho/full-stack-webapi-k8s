@@ -8,35 +8,32 @@ Additionally, the project uses **Argo CD** for managing **GitOps** deployment of
 
 The main implementation steps are as follows:
 
-1. **Prepare the Kubernetes Architecture**
-    - Deploy CrunchyData Postgres Operator
-    - Deploy Argo CD via Helm and configure it
-    - Deploy the PostgreSQL cluster using Argo CD
-    - Configure PostgreSQL cluster
-2. **Deploy the Web API**
-    - Backend API
-    - Frontend application
-3. **Deploy Helm Chart Components**
+1. **Prepare the Kubernetes Architecture** 🏗️
+  - Deploy CrunchyData Postgres Operator 🐘
+  - Deploy Argo CD via Helm and configure it 🚀
+  - Deploy the PostgreSQL cluster using Argo CD 🗄️
+  - Configure PostgreSQL cluster ⚙️
+2. **Deploy the Web API** 🌐
+  - Backend API 🛠️
+  - Frontend application 🎨
+3. **Deploy Helm Chart Components** 📦
 
 This case study demonstrates the following core concepts:
 
-- **Infrastructure as Code (IaC)**
-- **GitOps**
-- **Containerization**
+- **Infrastructure as Code (IaC)** 📜
+- **GitOps** 🔄
+- **Containerization** 🐳
 
 <aside>
-👉
-
-Is it possible to adopt alternative strategies and technologies? Absolutely! This project is flexible and allows for different approaches in deploying components. 
-
+📒 Is it possible to adopt alternative strategies and technologies? Absolutely! This project is flexible and allows for different approaches in deploying components. 
 </aside>
 
 ---
 
 # Prerequisites
 
-- Kubernetes cluster v1.32.2 (using Docker Desktop in this case)
-- Terraform v1.11.2
+- Kubernetes cluster v1.32.2 (using Docker Desktop in this case) 🐳
+- Terraform v1.11.2 🌍
 
 ---
 
@@ -50,7 +47,7 @@ Below is the architecture along with the components used:
 
 The first step is to deploy all the components required for the webapp.
 
-## a. Deploy CrunchyData Postgres Operator
+## a. Deploy CrunchyData Postgres Operator 🐘
 
 The **CrunchyData Postgres Operator** is deployed to handle PostgreSQL instances and provides built-in backup and replication services.
 
@@ -58,17 +55,17 @@ The **CrunchyData Postgres Operator** is deployed to handle PostgreSQL instances
 
 ```hcl
 resource "helm_release" "crunchy_operator" {
-    name       = "crunchy-operator"
-    chart      = "pgo"
-    version    = "5.7.4"
-    repository = "oci://registry.developers.crunchydata.com/crunchydata"
-    namespace  = "default"
+  name       = "crunchy-operator"
+  chart      = "pgo"
+  version    = "5.7.4"
+  repository = "oci://registry.developers.crunchydata.com/crunchydata"
+  namespace  = "default"
 }
 ```
 
 ---
 
-## b. Deploy Argo CD via Helm
+## b. Deploy Argo CD via Helm 🚀
 
 1. Create the Argo CD namespace in your Kubernetes cluster:
 
@@ -89,7 +86,7 @@ helm install argocd argo/argo-cd -n argocd
 
 ---
 
-## c. Deploy PostgreSQL Cluster via Argo CD
+## c. Deploy PostgreSQL Cluster via Argo CD 🗄️
 
 The **CrunchyData Postgres Operator** provides Custom Resource Definitions (CRDs), such as `PGCluster`, for deploying PostgreSQL clusters. This step deploys the PostgreSQL cluster via Argo CD and Terraform using the Helm provider.
 
@@ -98,38 +95,38 @@ The **CrunchyData Postgres Operator** provides Custom Resource Definitions (CRDs
 ```hcl
 resource "argocd_application" "postgres_cluster" {
   metadata {
-    name      = "postgres-cluster"
-    namespace = "argocd"
+  name      = "postgres-cluster"
+  namespace = "argocd"
   }
 
   spec {
-    project = "default"
+  project = "default"
 
-    source {
-      repo_url        = "git@github.com:fabriziowho/full-stack-webapi-k8s.git"
-      target_revision = "main"
-      path            = "k8s-app/helm/postgres-cluster"
+  source {
+    repo_url        = "git@github.com:fabriziowho/full-stack-webapi-k8s.git"
+    target_revision = "main"
+    path            = "k8s-app/helm/postgres-cluster"
 
-      helm {
-        value_files = ["values.yaml"]
-      }
+    helm {
+    value_files = ["values.yaml"]
+    }
+  }
+
+  destination {
+    namespace = "default"
+    server    = "https://kubernetes.default.svc"
+  }
+
+  sync_policy {
+    automated {
+    self_heal = true
+    prune     = true
     }
 
-    destination {
-      namespace = "default"
-      server    = "https://kubernetes.default.svc"
-    }
-
-    sync_policy {
-      automated {
-        self_heal = true
-        prune     = true
-      }
-
-      sync_options = [
-        "CreateNamespace=true"
-      ]
-    }
+    sync_options = [
+    "CreateNamespace=true"
+    ]
+  }
   }
 }
 
@@ -139,7 +136,7 @@ resource "argocd_application" "postgres_cluster" {
 
 ---
 
-## d. Configure PostgreSQL Cluster
+## d. Configure PostgreSQL Cluster ⚙️
 
 Example PostgreSQL configuration script:
 
@@ -155,9 +152,9 @@ SET search_path TO webapp, public;
 
 -- Step 4: Create a table in the new schema
 CREATE TABLE webapp.users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL
 );
 
 ```
@@ -171,9 +168,9 @@ INSERT INTO users (name, email) VALUES ('Jane Smith', 'jane@example.com');
 
 ---
 
-# 2. Deploying the Web API
+# 2. Deploying the Web API 🌐
 
-## a. Backend API
+## a. Backend API 🛠️
 
 The backend API manages database queries through a Node.js-based API. It uses Swagger for API testing.
 
@@ -183,7 +180,7 @@ To test locally, you'll need to port-forward the PostgreSQL service to allow com
 
 ![image.png](readme-contents/image%202.png)
 
-## b. Frontend
+## b. Frontend 🎨
 
 The frontend is built with React and communicates with the backend API via the `/users` endpoint to fetch user data.
 
@@ -195,7 +192,7 @@ An **NGINX** ingress controller is used to manage routing within the Kubernetes 
 
 ---
 
-# 3. Deploying Helm Chart Components
+# 3. Deploying Helm Chart Components 📦
 
 ## a. Adjust Environment Variables
 
@@ -221,21 +218,21 @@ const pool = new Pool({
 ```jsx
 // Fetch users from the API
   useEffect(() => {
-    axios.get("/users")
-      .then(response => {
-        setUsers(response.data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('An error occurred while fetching the data');
-        setLoading(false);
-      });
+  axios.get("/users")
+    .then(response => {
+    setUsers(response.data);
+    setLoading(false);
+    })
+    .catch(() => {
+    setError('An error occurred while fetching the data');
+    setLoading(false);
+    });
   }, []);
 ```
 
 ---
 
-## b. Deploy Helm Chart App via Argo CD
+## b. Deploy Helm Chart App via Argo CD 🚀
 
 Argo CD will manage the deployment of the Helm chart, ensuring a smooth CI/CD pipeline.
 
@@ -250,21 +247,21 @@ metadata:
 spec:
   project: default
   source:
-    path: k8s-app/helm/webapp
-    repoURL: git@github.com:fabriziowho/full-stack-webapi-k8s.git
-    targetRevision: main
-    helm:
-      valueFiles:
-        - values.yaml
+  path: k8s-app/helm/webapp
+  repoURL: git@github.com:fabriziowho/full-stack-webapi-k8s.git
+  targetRevision: main
+  helm:
+    valueFiles:
+    - values.yaml
   destination:
-    namespace: default
-    server: https://kubernetes.default.svc
+  namespace: default
+  server: https://kubernetes.default.svc
   syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
-    syncOptions:
-      - CreateNamespace=true
+  automated:
+    selfHeal: true
+    prune: true
+  syncOptions:
+    - CreateNamespace=true
 
 ```
 

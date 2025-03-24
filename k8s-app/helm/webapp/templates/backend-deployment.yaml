@@ -1,46 +1,58 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: webapp-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: webapp
   template:
     metadata:
       labels:
-        app: backend
+        app: webapp
     spec:
       containers:
-        - name: backend
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
-          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        - name: webapp
+          image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag }}"
+          imagePullPolicy: {{ .Values.webapp.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.backend.service.port }}
+            - containerPort: {{ .Values.webapp.service.port }}
           env:
             - name: DB_HOST
-              value: "postgresql"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secretRefName }}
+                  key: host
             - name: DB_PORT
-              value: "5432"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secretRefName }}
+                  key: port
             - name: DB_NAME
-              value: "{{ .Values.postgresql.database }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secretRefName }}
+                  key: dbname
             - name: DB_USER
-              value: "postgres"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secretRefName }}
+                  key: user
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgresql-secret
+                  name: {{ .Values.postgresql.secretRefName }}
                   key: password
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: webapp-service
 spec:
   selector:
-    app: backend
+    app: webapp
   ports:
-    - port: {{ .Values.backend.service.port }}
-      targetPort: {{ .Values.backend.service.port }}
+    - port: {{ .Values.webapp.service.port }}
+      targetPort: {{ .Values.webapp.service.port }}
   type: ClusterIP

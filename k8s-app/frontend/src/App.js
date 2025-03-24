@@ -8,7 +8,7 @@ function App() {
 
   // Fetch users from the API
   useEffect(() => {
-    axios.get("http://localhost:5000/users")
+    axios.get("/users")
       .then(response => {
         setUsers(response.data);
         setLoading(false);

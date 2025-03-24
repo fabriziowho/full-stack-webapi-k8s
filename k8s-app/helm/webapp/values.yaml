@@ -1,15 +1,15 @@
 frontend:
   image:
-    repository: my-frontend-repo
-    tag: latest
+    repository: fabriziowho/fullstack-webapi-k8s
+    tag: frontend
     pullPolicy: IfNotPresent
   service:
     port: 80
 
-backend:
+webapp:
   image:
-    repository: my-backend-repo
-    tag: latest
+    repository: fabriziowho/fullstack-webapi-k8s
+    tag: api-webapp
     pullPolicy: IfNotPresent
   service:
     port: 5000
@@ -18,7 +18,6 @@ postgresql:
   image:
     repository: postgres
     tag: "13"
-  password: mysecretpassword
-  database: mydb
+  secretRefName: postgres-cluster-pguser-postgres-cluster
   service:
     port: 5432

@@ -10,11 +10,11 @@ const port = process.env.PORT || 5000;
 
 // Set up PostgreSQL connection
 const pool = new Pool({
-  user: 'postgres-cluster', // Replace with your PostgreSQL user
-  host: 'localhost',
-  database: 'postgres-cluster',
-  password: '', // Replace with your PostgreSQL password
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 // Swagger setup

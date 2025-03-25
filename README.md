@@ -36,6 +36,7 @@ This case study demonstrates the following core concepts:
 
 - Kubernetes cluster v1.32.2 (using Docker Desktop in this case) 🐳
 - Terraform v1.11.2 🌍
+- Helm v3.17.0 (for deploying Helm Charts on Kubernetes) 📦
 
 ---
 
